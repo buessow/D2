@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
  * Created by buessow on 6/6/16.
  */
 public class Crc16 {
+  int crc = 0;
 
   private static int[] table = new int[] {
       0, 4129, 8258, 12387, 16516, 20645, 24774, 28903, 33032, 37161, 41290,
@@ -52,21 +53,21 @@ public class Crc16 {
     return (int)crcValue;
   }
 
-  public static int compute2(byte[] bytes, int length) {
-    int crc = 0;          // initial value
-    int polynomial = 0x1021;   // 0001 0000 0010 0001  (0, 5, 12)
+  public void add(byte[] bytes) {
+    add(bytes, bytes.length);
+  }
+
+  public void add(byte[] bytes, int length) {
+    int polynomial = 0x1021;
     for (int p = 0; p < length; p++) {
       byte b = bytes[p];
       for (int i = 0; i < 8; i++) {
-        boolean bit = ((b   >> (7-i) & 1) == 1);
-        boolean c15 = ((crc >> 15    & 1) == 1);
+        boolean bit = ((b >> (7-i) & 1) == 1);
+        boolean c15 = ((crc >> 15 & 1) == 1);
         crc <<= 1;
         if (c15 ^ bit) crc ^= polynomial;
       }
     }
-
-    crc &= 0xffff;
-    return crc;
   }
   public static int compute3(byte[] bytes, int length) {
     int crc = 0;
@@ -74,12 +75,17 @@ public class Crc16 {
       crc = ((crc << 8) & 0xff00) ^ table[((crc >> 8) & 0xff) ^ bytes[i]];
     }
 
-    return crc & 0xffff;
+    return crc;
 
   }
 
+  public short get() {
+    return (short)(crc & 0xffff);
+  }
+
   public static void appendCrc16(ByteBuffer buffer) {
-    int crc16 = compute2(buffer.array(), buffer.position());
-    buffer.putShort((short)crc16);
+    Crc16 crc = new Crc16();
+    crc.add(buffer.array(), buffer.position());
+    buffer.putShort((short)crc.get());
   }
 }
