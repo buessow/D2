@@ -10,10 +10,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.buessow.dex.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:id="@+id/content"
+    android:gravity="fill_horizontal|fill_vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Hello World!!!"
+        android:singleLine="true"
+        android:id="@+id/foo" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_below="@+id/foo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:minLines="20"
+        android:editable="false"
+        android:textAlignment="viewStart"
+        android:autoText="false" />
 </RelativeLayout>
